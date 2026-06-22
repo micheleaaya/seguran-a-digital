@@ -1,0 +1,48 @@
+import random
+import string
+
+def gerar_senha_segura(comprimento=12):
+    # Restrição matemática: Para garantir pelo menos 1 de cada tipo, 
+    # o tamanho mínimo aceitável é 4.
+    if comprimento < 4:
+        raise ValueError("O comprimento mínimo para uma senha segura é 4 caracteres.")
+
+    # Definição dos grupos de caracteres (Análise Combinatória)
+    letras_maiusculas = string.ascii_uppercase
+    letras_minusculas = string.ascii_lowercase
+    numeros = string.digits
+    especiais = string.punctuation # Inclui símbolos como !, @, #, $, etc.
+
+    # 1. Garantia Matemática: Sorteia obrigatoriamente um elemento de cada grupo.
+    # Isso evita que, por pura probabilidade, a senha venha sem um caractere especial.
+    senha = [
+        random.choice(letras_maiusculas),
+        random.choice(letras_minusculas),
+        random.choice(numeros),
+        random.choice(especiais)
+    ]
+
+    # 2. União de todos os conjuntos para preencher o restante da senha
+    todos_caracteres = letras_maiusculas + letras_minusculas + numeros + especiais
+
+    # Calcula quantos caracteres ainda faltam para atingir o comprimento desejado
+    caracteres_restantes = comprimento - 4
+    
+    # Sorteia o restante dos caracteres dentro do universo total de possibilidades
+    senha.extend(random.choices(todos_caracteres, k=caracteres_restantes))
+
+    # 3. Embaralhamento (Shuffle): Altera a ordem dos elementos.
+    # Se não fizermos isto, as senhas sempre começariam com Maiúscula, Minúscula, Número e Especial.
+    random.shuffle(senha)
+
+    # Transforma a lista de caracteres de volta em uma string única
+    return "".join(senha)
+
+# --- Teste do Programa ---
+if __name__ == "__main__":
+    tamanho = 14  # Você pode alterar o tamanho aqui
+    senha_final = gerar_senha_segura(tamanho)
+    
+    print("*** GERADOR DE SENHAS MATEMATICAMENTE SEGURAS ***")
+    print(f"Comprimento definido: {tamanho} caracteres")
+    print(f"Senha gerada: {senha_final}")
